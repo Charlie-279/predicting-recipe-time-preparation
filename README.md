@@ -1,9 +1,13 @@
 # Predicting Recipe Time Preparation
 A regression and prediction project concerning recipes and ratings on food.com, for DSC 80 at UC San Diego.
 
+My exploratory data analysis on this dataset can be found here:
+https://charlie-279.github.io/recipes-and-ratings-data-analysis/
+
 By: Charlie Gillet (cgillet@ucsd.edu)
 
-## Introduction
+
+## Framing the Problem
 
 My prediction problem is to predict the number of minutes to prepare recipes, and this is a regression problem since number of minutes is a continuous variable. The relevant information that is known at the time of prediction are the date at which the recipe was submitted, the nutrition facts, and the average rating of the recipe.
 
@@ -18,3 +22,12 @@ The performance of my model was not ideal, since I just used the raw values from
 ## Final Model
 
 To improve upon my baseline model, I came up with some ideas on which columns to modify so that I could experiment with either changing these columns or leaving them as-is. I planned to modify the ‘date_ordinal’ column and the nutritional columns by standardizing them, and to modify the average rating column with quantile transformation. After experimentation, I found the best result to be to quantile transforming the average rating column and standardizing all of the nutritional columns, and leaving the submission date column as-is. I believe these changes improved my model because the average rating column primarily consists of duplicate values, like 4, 4.5, or 5. This makes it so that the distribution of average ratings is not normal, since values are clustered around these duplicate values. Using quantile transformer with normal distribution makes the rating values less clustered, so it is easier to find a trend with them. This led to a decrease in RMSE compared to the baseline model, which is a sign of improvement. Standardizing the nutritional columns made less of a difference than using the quantile transformer on the average rating column, but it still led to a decrease in RMSE.
+
+## Fairness Analysis
+
+To answer the question, "does my model perform worse for individuals in Group X than it does for individuals in Group Y?”, I conducted a permutation test.
+
+My Group X was recipes with a time preparation of 30 minutes or less, and my Group Y was recipes with a time preparation of over 30 minutes. My evaluation metric was RMSE, since my model is a regression model. The null and alternative hypotheses are:
+
+- Null Hypothesis: Our model is fair. Its RMSE for recipes that take 30 minutes or less and for recipes that take over 30 minutes are roughly the same, and any differences are due to random chance.
+- Alternative Hypothesis: Our model is unfair. Its RMSE for recipes that take 30 minutes or less is lower than its RMSE for recipes that take over 30 minutes.
